@@ -65,7 +65,7 @@
         if (speechQueue.length === 0) return; // No sentences in queue
 
         const sentence = speechQueue.shift(); // Get the next sentence
-        const utterance = new SpeechSynthesisUtterance(sentence);
+        const utterance = new SpeechSynthesisUtterance(sentence, { lang: '{{ $audience->language }}' });
 
         utterance.onend = function() {
             // When current speech finishes, play the next one
