@@ -19,6 +19,8 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
         }
         h1 {
             text-align: center;
@@ -29,13 +31,18 @@
             margin-bottom: 10px;
             color: #555;
         }
-        select {
+        select, textarea {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border-radius: 4px;
             border: 1px solid #ccc;
             font-size: 16px;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+            width: 94.5%;
         }
         button {
             width: 100%;
@@ -65,7 +72,12 @@
             <option value="es">Spanish</option>
             <option value="fr">French</option>
             <option value="zh">Chinese</option>
+            <!-- Add more languages as needed -->
         </select>
+
+        <label for="meeting-details">Meeting Details / Notes:</label>
+        <textarea name="context" id="meeting-details" placeholder="Enter any additional details or notes about the meeting..."></textarea>
+
         <button type="submit">Create a Meeting</button>
     </form>
 </div>

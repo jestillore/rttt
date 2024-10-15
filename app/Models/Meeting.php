@@ -9,6 +9,7 @@ class Meeting extends Model
 {
     protected $fillable = [
         'code',
+        'context',
         'language',
     ];
 

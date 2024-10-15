@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('code')
                 ->index();
+            $table->text('context')
+                ->nullable();
             $table->string('language');
             $table->timestamps();
         });
