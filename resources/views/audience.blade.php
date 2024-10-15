@@ -39,8 +39,8 @@
       });
 
       var channel = pusher.subscribe(meetingId);
-      channel.bind(`audience.${audienceId}`, function(data) {
-        queueSpeech(JSON.parse(data).message);
+      channel.bind(`audience.${audienceId}`, function(event) {
+        queueSpeech(JSON.parse(event.data).message);
       });
 
       channel.bind(`audience.${audienceId}.done`, function(data) {
@@ -81,7 +81,7 @@
         speechSynthesis.speak(utterance);
       }
 
-      function redirectToSummary() {
+      function redirectToSummary(data) {
         // Construct the URL dynamically using the Blade variables
         const url = `/meetings/${meetingId}/audiences/${audienceId}/summary`;
 
