@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Contracts\Translator;
 use App\Models\Meeting;
+use App\Translators\Nothing;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
             return Meeting::where('code', $value)
                 ->firstOrFail();
         });
+
+        App::bind(Translator::class, Nothing::class);
+        URL::forceScheme('https');
     }
 
     /**

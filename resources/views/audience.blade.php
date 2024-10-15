@@ -30,23 +30,23 @@
       // Enable pusher logging - don't include this in production
       Pusher.logToConsole = true;
 
-      const meetingId = {{ $meeting->id }};
+      const meetingId = '{{ $meeting->code }}';
       const audienceId = {{ $audience->id }};
-      const pusher_api_key = "{{ env('PUSHER_KEY') }}"
+      const pusher_api_key = "{{ config('broadcasting.connections.pusher.key') }}"
 
       var pusher = new Pusher(pusher_api_key, {
         cluster: 'eu'
       });
 
-      var channel = pusher.subscribe('my-channel');
-      channel.bind('my-event', function(data) {
+      var channel = pusher.subscribe(meetingId);
+      channel.bind(`audience.${audienceId}`, function(data) {
         queueSpeech(data);
       });
 
       channel.bind(`audience.${audienceId}.done`, function(data) {
         redirectToSummary(data);
       });
-      
+
       // Queue for sentences to be spoken
       let speechQueue = [];
 
@@ -81,7 +81,7 @@
         speechSynthesis.speak(utterance);
       }
 
-      function redirectToSummary() {  
+      function redirectToSummary() {
         // Construct the URL dynamically using the Blade variables
         const url = `/meetings/${meetingId}/audiences/${audienceId}/summary`;
 

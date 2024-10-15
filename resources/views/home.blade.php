@@ -67,7 +67,7 @@
         @csrf
         <label for="language">Choose a Language:</label>
         <select id="language" name="language">
-            <option value="en">English</option>
+            <option value="en-uS">English</option>
             <option value="ar">Arabic</option>
             <option value="es">Spanish</option>
             <option value="fr">French</option>
