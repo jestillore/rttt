@@ -40,7 +40,7 @@
 
       var channel = pusher.subscribe(meetingId);
       channel.bind(`audience.${audienceId}`, function(data) {
-        queueSpeech(data);
+        queueSpeech(JSON.parse(data).message);
       });
 
       channel.bind(`audience.${audienceId}.done`, function(data) {
