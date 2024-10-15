@@ -41,7 +41,7 @@
       var channel = pusher.subscribe(meetingId);
       channel.bind(`audience.${audienceId}`, function(event) {
         console.log(event);
-        queueSpeech(JSON.parse(event.data).message);
+        queueSpeech(event.message);
       });
 
       channel.bind(`audience.${audienceId}.done`, function(data) {
