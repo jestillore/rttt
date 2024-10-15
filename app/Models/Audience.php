@@ -13,6 +13,7 @@ class Audience extends Model
     protected $fillable = [
         'meeting_id',
         'language',
+        'summary',
     ];
 
     public function meeting(): BelongsTo

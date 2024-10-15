@@ -20,4 +20,16 @@ class Meeting extends Model
     {
         return $this->hasMany(Audience::class);
     }
+
+    public function transcripts(): HasMany
+    {
+        return $this->hasMany(Transcript::class);
+    }
+
+    public function generateTranscriptsToString(): string
+    {
+        return $this->transcripts()
+            ->pluck('content')
+            ->join("\n");
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SummarizeAndBroadcast;
 use App\Models\Meeting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -34,6 +35,16 @@ class MeetingsController extends Controller
     public function join(Meeting $meeting)
     {
         return view('join', [
+            'meeting' => $meeting,
+        ]);
+    }
+
+    public function finish(Meeting $meeting)
+    {
+        $meeting->audiences()->each(function ($audience) {
+            SummarizeAndBroadcast::dispatch($audience->id);
+        });
+        return view('transcript', [
             'meeting' => $meeting,
         ]);
     }

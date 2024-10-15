@@ -13,6 +13,7 @@
             align-items: center;
             height: 100vh;
             background-color: #f0f0f0;
+            flex-direction: column;
         }
 
         .qr-container {
@@ -24,11 +25,28 @@
             background-color: white;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 25px;
         }
 
         .qr-container img {
             max-width: 100%;
             max-height: 100%;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
@@ -37,5 +55,8 @@
 <div class="qr-container">
     {!! $joinQrCode !!}
 </div>
+
+<a class="button" href="{{ route('meetings.finish', $meeting->code) }}">End Meeting</a>
+
 </body>
 </html>
