@@ -27,4 +27,12 @@ class AudiencesController extends Controller
             'audience' => $audience,
         ]);
     }
+
+    public function summary(Meeting $meeting, Audience $audience)
+    {
+        return view('summary', [
+            'meeting' => $meeting,
+            'audience' => $audience,
+        ]);
+    }
 }
