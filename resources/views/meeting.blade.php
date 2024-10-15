@@ -79,7 +79,7 @@
         recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = true;
-        recognition.lang = {{ $meeting->language }}; // Set language based on selection
+        recognition.lang = '{{ $meeting->language }}'; // Set language based on selection
         recognition.maxAlternatives = 1;
 
         recognition.onstart = () => {
