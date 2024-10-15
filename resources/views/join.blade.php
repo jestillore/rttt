@@ -60,11 +60,9 @@
         @csrf
         <label for="language">Choose a Language:</label>
         <select id="language" name="language">
-            <option value="en">English</option>
-            <option value="ar">Arabic</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-            <option value="zh">Chinese</option>
+            <option value="en-US">English</option>
+            <option value="es-ES">Spanish</option>
+            <option value="sv-SE">Swedish</option>
         </select>
         <button type="submit">Join Meeting</button>
     </form>

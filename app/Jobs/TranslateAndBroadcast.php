@@ -8,6 +8,7 @@ use App\Models\Audience;
 use App\Models\Meeting;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 
 class TranslateAndBroadcast implements ShouldQueue
 {
@@ -35,6 +36,7 @@ class TranslateAndBroadcast implements ShouldQueue
             audience: $audience,
             sentence: $this->message
         );
+        Log::info('TRANSLATED: ' . $translatedSentence);
         event(new NewSentence(
             meeting: $meeting->code,
             audience: $audience->id,

@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Contracts\Translator;
 use App\Models\Meeting;
 use App\Translators\Nothing;
+use App\Translators\OpenAi;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -22,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
                 ->firstOrFail();
         });
 
-        App::bind(Translator::class, Nothing::class);
+        App::bind(Translator::class, OpenAi::class);
         URL::forceScheme('https');
     }
 
