@@ -54,10 +54,10 @@ class OpenAi implements Translator
         If it helps, the topic context of the text is: $meeting->context
         PROMPT;
 
-        $response = Http::withToken(config('openai.token'))
+        $response = Http::withToken(config('services.openai.token'))
             ->timeout(300)
             ->post('https://api.openai.com/v1/chat/completions', [
-                'model' => config('openai.model'),
+                'model' => 'gpt-4o-mini',
                 'messages' => [
                     [
                         'role' => 'system',
