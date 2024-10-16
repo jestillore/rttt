@@ -69,7 +69,8 @@
             <option value="Indonesian">Indonesian</option>
             <option value="Cebuano">Cebuano</option>
             <option value="German">German</option>
-            <option value="Russian">Russian</option>
+            <option value="Ukrainian">Ukrainian</option>
+            <option value="Telugu">Telugu</option>
         </select>
         <button type="submit">Join Meeting</button>
     </form>
