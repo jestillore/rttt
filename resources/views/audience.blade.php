@@ -68,11 +68,7 @@
       channel.bind(`audience.${audienceId}`, function(event) {
         console.log(event);
         if (event.audioUrl) {
-          queueAudio(event.audioUrl);
-        }
-
-        if (event.caption) {
-          displayCaptions([event.translatedMessage], captionElement);
+          queueAudio(event);
         }
       });
 
@@ -83,11 +79,11 @@
       let audioQueue = [];
 
       // Function to queue audio tracks
-      function queueAudio(url) {
-        audioQueue.push(url);  // Add the audio URL to the queue
+      function queueAudio(event) {
+        audioQueue.push(event);  // Add the audio URL to the queue
 
         // If no audio is currently playing, start playing the next one in the queue
-        if (audioPlayer().paused && audioQueue.length === 1) {
+        if (audioPlayer().paused && audioQueue.length > 0) {
             playNextInQueue();
         }
       }
@@ -98,10 +94,13 @@
 
       // Function to play the next audio in the queue
       function playNextInQueue() {
+        const nextData = audioQueue[0];
           if (audioQueue.length > 0) {
-              const nextAudio = audioQueue[0];  // Get the first item in the queue
-              audioPlayer().src = nextAudio;
-              audioPlayer().play();
+            const nextAudio = nextData.audioUrl;  // Get the first item in the queue
+            audioPlayer().src = nextAudio;
+            audioPlayer().play();
+
+            displayCaptions([nextData.translatedMessage], captionElement);
           }
       }
 
@@ -137,7 +136,7 @@
         for (let caption of captions) {
           element.textContent = ""; // Clear previous caption
           await typewriterEffect(caption, element); // Wait until the caption is fully displayed
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // Pause before next caption
+          await new Promise((resolve) => setTimeout(resolve, 100)); // Pause before next caption
         }
       };
     </script>
