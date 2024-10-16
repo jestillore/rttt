@@ -21,23 +21,34 @@
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            width: 80%;
-            max-width: 500px;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
         }
         #audioPlayer {
             visibility: hidden;
         }
-    </style>
+        #caption {
+          font-size: 24px;
+          font-family: Arial, sans-serif;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+          margin-top: 20px;
+          position: fixed;
+        }
+      </style>
       <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    
 </head>
 <body>
-    <div class="card">
-        <h1>Meeting Details</h1>
-        <p>Audience ID: {{ $audience->id }}</p>
-        <p>Audience Language: {{ $audience->language }} </p>
-        <!-- Audio element -->
-        <audio id="audioPlayer" controls style=""></audio>
+    <div>
+      <div class="card">
+          <h1>Meeting Details</h1>
+          <p>Audience ID: {{ $audience->id }}</p>
+          <p>Audience Language: {{ $audience->language }} </p>
+          <!-- Audio element -->
+          <audio id="audioPlayer" controls></audio>
+      </div>
+      <div id="caption"></div>
     </div>
 </body>
 <script>
@@ -47,6 +58,7 @@
       const meetingId = '{{ $meeting->code }}';
       const audienceId = {{ $audience->id }};
       const pusher_api_key = "{{ config('broadcasting.connections.pusher.key') }}"
+      const captionElement = document.getElementById("caption");
 
       var pusher = new Pusher(pusher_api_key, {
         cluster: 'eu'
@@ -55,7 +67,13 @@
       var channel = pusher.subscribe(meetingId);
       channel.bind(`audience.${audienceId}`, function(event) {
         console.log(event);
-        queueAudio(event.url);
+        if (event.audioUrl) {
+          queueAudio(event.audioUrl);
+        }
+
+        if (event.caption) {
+          displayCaptions([event.translatedMessage], captionElement);
+        }
       });
 
       channel.bind(`audience.${audienceId}.done`, function(data) {
@@ -78,20 +96,20 @@
         return document.getElementById('audioPlayer');
       }
 
-        // Function to play the next audio in the queue
-        function playNextInQueue() {
-            if (audioQueue.length > 0) {
-                const nextAudio = audioQueue[0];  // Get the first item in the queue
-                audioPlayer().src = nextAudio;
-                audioPlayer().play();
-            }
-        }
+      // Function to play the next audio in the queue
+      function playNextInQueue() {
+          if (audioQueue.length > 0) {
+              const nextAudio = audioQueue[0];  // Get the first item in the queue
+              audioPlayer().src = nextAudio;
+              audioPlayer().play();
+          }
+      }
 
-        // Event listener to detect when the current audio has finished playing
-        audioPlayer().addEventListener('ended', function() {
-            audioQueue.shift();  // Remove the played audio from the queue
-            playNextInQueue();   // Play the next audio in the queue
-        });
+      // Event listener to detect when the current audio has finished playing
+      audioPlayer().addEventListener('ended', function() {
+          audioQueue.shift();  // Remove the played audio from the queue
+          playNextInQueue();   // Play the next audio in the queue
+      });
 
       function redirectToSummary(data) {
         // Construct the URL dynamically using the Blade variables
@@ -99,6 +117,28 @@
 
         // Redirect to the constructed URL
         window.location.href = url;
-    }
+      }
+
+      const typewriterEffect = (text, element, speed = 100) => {
+        return new Promise((resolve) => {
+          let i = 0;
+          const interval = setInterval(() => {
+            element.textContent += text[i];
+            i++;
+            if (i === text.length) {
+              clearInterval(interval);
+              resolve(); // Proceed to the next caption
+            }
+          }, speed);
+        });
+      };
+
+      const displayCaptions = async (captions, element) => {
+        for (let caption of captions) {
+          element.textContent = ""; // Clear previous caption
+          await typewriterEffect(caption, element); // Wait until the caption is fully displayed
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Pause before next caption
+        }
+      };
     </script>
 </html>
