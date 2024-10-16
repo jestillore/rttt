@@ -102,21 +102,14 @@
             audioPlayer().play();
 
             displayCaptions([nextData.translatedMessage], captionElement);
+            audioQueue.shift(); 
           }
       }
 
-      // // Event listener to detect when the current audio has finished playing
-      // audioPlayer().addEventListener('ended', function() {
-      //     audioQueue.shift();  // Remove the played audio from the queue
-      //     playNextInQueue();   // gPlay the next audio in the queue
-      // });
 
       setInterval(() => {
-        if (!audioPlayer.paused) {
-          audioQueue.shift(); 
-          if (audioQueue.length ) {
-            playNextInQueue();
-          }
+        if (audioPlayer.paused && audioQueue.length ) {
+          playNextInQueue();
         }
       }, 1000);
 
