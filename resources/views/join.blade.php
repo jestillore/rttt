@@ -53,7 +53,10 @@
     </style>
 </head>
 <body>
-
+<video width="640" height="360" controls>
+    <source src="https://rttt.estillore.dev/jarre.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
 <div class="container">
     <h1>Join Meeting</h1>
     <form action="{{ route('meetings.audiences.store', $meeting->code) }}" method="POST">
