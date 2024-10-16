@@ -36,7 +36,7 @@
 
         .button {
             padding: 10px 20px;
-            background-color: #dc3545;
+            background-color: #04dc29;
             color: white;
             border: none;
             border-radius: 4px;
@@ -44,10 +44,6 @@
             cursor: pointer;
             text-decoration: none;
             font-family: 'Trebuchet MS';
-        }
-
-        .button:hover {
-            background-color: #c82333;
         }
     </style>
 </head>
@@ -57,12 +53,13 @@
     {!! $joinQrCode !!}
 </div>
 
-<a class="button" href="{{ route('meetings.finish', $meeting->code) }}">End Meeting</a>
+<a id="end-button" class="button" href="{{ route('meetings.finish', $meeting->code) }}">End Meeting</a>
 <script>
     // Web Speech API recognition setup
     let recognition = null;
     let isRecognizing = false;
     let sentences = [];
+    let microphoneIndex = 0;
 
     // Initialize Web Speech API
 
@@ -87,12 +84,29 @@
         };
 
         recognition.onresult = (event) => {
+            let interimTranscript = '';
+
             // Process the results and handle interim and final results
             for (let i = event.resultIndex; i < event.results.length; i++) {
                 const transcript = event.results[i][0].transcript.trim();
                 if (event.results[i].isFinal) {
+                    if (microphoneIndex === 0) {
+                        document.getElementById('end-button').style.backgroundColor = '#04dc29';
+                    } else {
+                        document.getElementById('end-button').style.backgroundColor = '#2c77f4';
+                    }
+                    microphoneIndex++;
+                    microphoneIndex %= 2;
+
                     processSentence(transcript);
+                } else {
+                    interimTranscript += transcript;
                 }
+            }
+
+            // Optionally process interim results as well
+            if (interimTranscript) {
+                // console.log(interimTranscript)
             }
         };
 
