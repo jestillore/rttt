@@ -105,11 +105,20 @@
           }
       }
 
-      // Event listener to detect when the current audio has finished playing
-      audioPlayer().addEventListener('ended', function() {
-          audioQueue.shift();  // Remove the played audio from the queue
-          playNextInQueue();   // gPlay the next audio in the queue
-      });
+      // // Event listener to detect when the current audio has finished playing
+      // audioPlayer().addEventListener('ended', function() {
+      //     audioQueue.shift();  // Remove the played audio from the queue
+      //     playNextInQueue();   // gPlay the next audio in the queue
+      // });
+
+      setInterval(() => {
+        if (!audioPlayer.paused) {
+          audioQueue.shift(); 
+          if (audioQueue.length ) {
+            playNextInQueue();
+          }
+        }
+      }, 1000);
 
       function redirectToSummary(data) {
         // Construct the URL dynamically using the Blade variables
