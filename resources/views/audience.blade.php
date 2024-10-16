@@ -24,9 +24,23 @@
             width: 80%;
             max-width: 500px;
         }
+        #audioPlayer {
+            visibility: hidden;
+        }
     </style>
       <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    <script>
+    
+</head>
+<body>
+    <div class="card">
+        <h1>Meeting Details</h1>
+        <p>Audience ID: {{ $audience->id }}</p>
+        <p>Audience Language: {{ $audience->language }} </p>
+        <!-- Audio element -->
+        <audio id="audioPlayer" controls style=""></audio>
+    </div>
+</body>
+<script>
       // Enable pusher logging - don't include this in production
       Pusher.logToConsole = true;
 
@@ -41,46 +55,43 @@
       var channel = pusher.subscribe(meetingId);
       channel.bind(`audience.${audienceId}`, function(event) {
         console.log(event);
-        queueSpeech(event.message);
+        queueAudio(event.url);
       });
 
       channel.bind(`audience.${audienceId}.done`, function(data) {
         redirectToSummary(data);
       });
 
-      // Queue for sentences to be spoken
-      let speechQueue = [];
+      let audioQueue = [];
 
-      // Function to add a sentence to the speech queue
-      function queueSpeech(text) {
-        speechQueue.push(text);
-        // Start speaking if no other speech is in progress
-        if (!speechSynthesis.speaking) {
+      // Function to queue audio tracks
+      function queueAudio(url) {
+        audioQueue.push(url);  // Add the audio URL to the queue
+
+        // If no audio is currently playing, start playing the next one in the queue
+        if (audioPlayer().paused && audioQueue.length === 1) {
             playNextInQueue();
         }
       }
 
-      // Function to play the next sentence in the queue
-      function playNextInQueue() {
-        if (speechQueue.length === 0) return; // No sentences in queue
-
-        const sentence = speechQueue.shift(); // Get the next sentence
-        const utterance = new SpeechSynthesisUtterance(sentence, { lang: '{{ $audience->language }}' });
-
-        utterance.onend = function() {
-            // When current speech finishes, play the next one
-            playNextInQueue();
-        };
-
-        utterance.onerror = function() {
-            console.error('Speech synthesis error.');
-            // Move on to the next sentence in case of an error
-            playNextInQueue();
-        };
-
-        // Start speaking the sentence
-        speechSynthesis.speak(utterance);
+      function audioPlayer() {
+        return document.getElementById('audioPlayer');
       }
+
+        // Function to play the next audio in the queue
+        function playNextInQueue() {
+            if (audioQueue.length > 0) {
+                const nextAudio = audioQueue[0];  // Get the first item in the queue
+                audioPlayer().src = nextAudio;
+                audioPlayer().play();
+            }
+        }
+
+        // Event listener to detect when the current audio has finished playing
+        audioPlayer().addEventListener('ended', function() {
+            audioQueue.shift();  // Remove the played audio from the queue
+            playNextInQueue();   // Play the next audio in the queue
+        });
 
       function redirectToSummary(data) {
         // Construct the URL dynamically using the Blade variables
@@ -90,12 +101,4 @@
         window.location.href = url;
     }
     </script>
-</head>
-<body>
-    <div class="card">
-        <h1>Meeting Details</h1>
-        <p>Audience ID: {{ $audience->id }}</p>
-        <p>Audience Language: {{ $audience->language }} </p>
-    </div>
-</body>
 </html>
