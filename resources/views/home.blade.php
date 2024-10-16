@@ -68,7 +68,6 @@
         <label for="language">Choose a Language:</label>
         <select id="language" name="language">
             <option value="en-US">English</option>
-            <option value="es-ES">Spanish</option>
             <option value="sv-SE">Swedish</option>
         </select>
 
