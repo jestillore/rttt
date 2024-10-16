@@ -98,7 +98,9 @@
                     microphoneIndex++;
                     microphoneIndex %= 2;
 
-                    processSentence(transcript);
+                    if (transcript) {
+                        processSentence(transcript);
+                    }
                 } else {
                     interimTranscript += transcript;
                 }

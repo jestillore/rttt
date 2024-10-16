@@ -62,6 +62,7 @@
         <select id="language" name="language">
             <option value="English">English</option>
             <option value="Swedish">Swedish</option>
+            <option value="Finnish">Finnish</option>
             <option value="Spanish">Spanish</option>
             <option value="Urdu">Urdu</option>
             <option value="Hindi">Hindi</option>
