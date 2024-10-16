@@ -98,6 +98,7 @@
           if (audioQueue.length > 0) {
             const nextAudio = nextData.audioUrl;  // Get the first item in the queue
             audioPlayer().src = nextAudio;
+            audioPlayer().load();
             audioPlayer().play();
 
             displayCaptions([nextData.translatedMessage], captionElement);
@@ -107,7 +108,7 @@
       // Event listener to detect when the current audio has finished playing
       audioPlayer().addEventListener('ended', function() {
           audioQueue.shift();  // Remove the played audio from the queue
-          playNextInQueue();   // Play the next audio in the queue
+          playNextInQueue();   // gPlay the next audio in the queue
       });
 
       function redirectToSummary(data) {
