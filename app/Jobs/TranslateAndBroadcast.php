@@ -8,7 +8,10 @@ use App\Models\Audience;
 use App\Models\Meeting;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TranslateAndBroadcast implements ShouldQueue
 {
@@ -20,7 +23,7 @@ class TranslateAndBroadcast implements ShouldQueue
     public function __construct(
         public readonly int $meetingId,
         public readonly int $audienceId,
-        public readonly string $message
+        public readonly string $originalMessage
     ) {
     }
 
@@ -31,16 +34,28 @@ class TranslateAndBroadcast implements ShouldQueue
     {
         $meeting = Meeting::findOrFail($this->meetingId);
         $audience = Audience::findOrFail($this->audienceId);
-        $translatedSentence = $translator->translate(
+        $translatedMessage = $translator->translate(
             meeting: $meeting,
             audience: $audience,
-            sentence: $this->message
+            sentence: $this->originalMessage
         );
-        Log::info('TRANSLATED: ' . $translatedSentence);
+        Log::info('TRANSLATED: ' . $translatedMessage);
+
+        $fileName = Str::random(32) . '.mp3';
+        $response = Http::withToken(config('services.openai.token'))
+            ->post('https://api.openai.com/v1/audio/speech', [
+                'model' => 'tts-1',
+                'input' => $translatedMessage,
+                'voice' => 'onyx',
+            ]);
+        Storage::put($fileName, $response->body());
+
         event(new NewSentence(
             meeting: $meeting->code,
             audience: $audience->id,
-            message: $translatedSentence
+            originalMessage: $this->originalMessage,
+            translatedMessage: $translatedMessage,
+            audioUrl: Storage::temporaryUrl($fileName, now()->addHour())
         ));
     }
 }

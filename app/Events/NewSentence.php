@@ -15,7 +15,9 @@ class NewSentence implements ShouldBroadcast
     public function __construct(
         public string $meeting,
         public int $audience,
-        public string $message
+        public string $originalMessage,
+        public string $translatedMessage,
+        public string $audioUrl
     ) {
     }
 

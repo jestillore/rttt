@@ -22,7 +22,7 @@ class SentencesController extends Controller
             dispatch(new TranslateAndBroadcast(
                 meetingId: $meeting->id,
                 audienceId: $audience->id,
-                message: $sentence
+                originalMessage: $sentence
             ));
         });
         return response()->noContent();
